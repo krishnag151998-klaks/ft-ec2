@@ -1,0 +1,57 @@
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: familytree-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-familytree}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-familytree_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-familytree}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-familytree} -d ${POSTGRES_DB:-familytree}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - familytree-network
+
+  # ---------------------------------------------------------------------------
+  # Next.js Application
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: familytree-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-familytree}:${POSTGRES_PASSWORD:-familytree_secret}@db:5432/${POSTGRES_DB:-familytree}?schema=public
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - familytree-network
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  familytree-network:
+    driver: bridge

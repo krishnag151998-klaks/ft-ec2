@@ -1,0 +1,74 @@
+# =============================================================================
+# Stage 1: Install dependencies
+# =============================================================================
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma/
+RUN npm ci
+
+# =============================================================================
+# Stage 2: Build the application
+# =============================================================================
+FROM node:20-alpine AS builder
+RUN apk add --no-cache openssl
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Compile seed script to JS
+RUN npx tsc prisma/seed.ts --outDir prisma/compiled --esModuleInterop --module commonjs --skipLibCheck
+
+# Build Next.js (standalone output)
+RUN npm run build
+
+# =============================================================================
+# Stage 3: Production runner
+# =============================================================================
+FROM node:20-alpine AS runner
+RUN apk add --no-cache openssl bash curl
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy standalone build output
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy Prisma client runtime (needed by app)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Copy Prisma schema + migrations + full prisma CLI module
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma/compiled/seed.js ./prisma/seed.js
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
+
+# Install only prisma CLI for migrations/seeding in production
+RUN npm install --no-save prisma@5.22.0
+
+# Copy entrypoint script
+COPY --chown=nextjs:nodejs scripts/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
+USER nextjs
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "server.js"]

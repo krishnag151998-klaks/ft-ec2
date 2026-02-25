@@ -1,0 +1,102 @@
+// =============================================================================
+// Prisma Schema — Family Tree Application (Union-Based)
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum UnionType {
+  marriage
+  partnership
+  divorced
+  widowed
+}
+
+enum ParentalRole {
+  biological
+  adoptive
+  step
+}
+
+// -----------------------------------------------------------------------------
+// Models
+// -----------------------------------------------------------------------------
+
+/// A single person in the family tree.
+model Individual {
+  id        String    @id @default(uuid()) @db.Uuid
+  firstName String    @map("first_name") @db.VarChar(100)
+  lastName  String    @map("last_name") @db.VarChar(100)
+  birthDate DateTime? @map("birth_date") @db.Date
+  deathDate DateTime? @map("death_date") @db.Date
+  gender    Gender
+  photoUrl  String?   @map("photo_url")
+  bio       String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Union relations
+  unionsAsPartner1 Union[]      @relation("Partner1")
+  unionsAsPartner2 Union[]      @relation("Partner2")
+  childOf          UnionChild[] @relation("ChildIndividual")
+
+  @@map("individuals")
+}
+
+/// A union (couple / partnership) between two individuals.
+/// partner2 is nullable to support single-parent households.
+model Union {
+  id         String    @id @default(uuid()) @db.Uuid
+  partner1Id String    @map("partner1_id") @db.Uuid
+  partner2Id String?   @map("partner2_id") @db.Uuid
+  unionType  UnionType @default(marriage) @map("union_type")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  partner1 Individual   @relation("Partner1", fields: [partner1Id], references: [id], onDelete: Cascade)
+  partner2 Individual?  @relation("Partner2", fields: [partner2Id], references: [id], onDelete: Cascade)
+  children UnionChild[]
+
+  @@unique([partner1Id, partner2Id])
+  @@index([partner1Id])
+  @@index([partner2Id])
+  @@map("unions")
+}
+
+/// Links a child to a union (parent pair).
+model UnionChild {
+  id            String       @id @default(uuid()) @db.Uuid
+  unionId       String       @map("union_id") @db.Uuid
+  childId       String       @map("child_id") @db.Uuid
+  parentalRole  ParentalRole @default(biological) @map("parental_role")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  union Union      @relation(fields: [unionId], references: [id], onDelete: Cascade)
+  child Individual @relation("ChildIndividual", fields: [childId], references: [id], onDelete: Cascade)
+
+  @@unique([unionId, childId])
+  @@index([unionId])
+  @@index([childId])
+  @@map("union_children")
+}

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 /**
  * POST /api/add-relative
@@ -14,6 +16,12 @@ import { prisma } from "@/lib/prisma";
  */
 export async function POST(request: Request) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        const userId = session.user.id;
+
         const body = await request.json();
         const { memberId, action, newPerson, parentalRole = "biological" } = body;
 
@@ -32,13 +40,13 @@ export async function POST(request: Request) {
             );
         }
 
-        // Verify the member exists
+        // Verify the member exists and belongs to the user
         const member = await prisma.individual.findUnique({ where: { id: memberId } });
-        if (!member) {
-            return NextResponse.json({ error: "Member not found" }, { status: 404 });
+        if (!member || member.userId !== userId) {
+            return NextResponse.json({ error: "Member not found or unauthorized" }, { status: 404 });
         }
 
-        // Create the new person
+        // Create the new person assigned to the user
         const created = await prisma.individual.create({
             data: {
                 firstName,
@@ -46,6 +54,7 @@ export async function POST(request: Request) {
                 birthDate: birthDate ? new Date(birthDate) : null,
                 gender,
                 bio: bio || null,
+                userId,
             },
         });
 

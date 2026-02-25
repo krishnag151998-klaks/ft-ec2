@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        const userId = session.user.id;
+
         const individuals = await prisma.individual.findMany({
+            where: { userId },
             include: {
                 unionsAsPartner1: {
                     include: {
@@ -43,6 +52,12 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        const userId = session.user.id;
+
         const body = await request.json();
         const { firstName, lastName, birthDate, gender, bio } = body;
 
@@ -60,6 +75,7 @@ export async function POST(request: Request) {
                 birthDate: birthDate ? new Date(birthDate) : null,
                 gender,
                 bio: bio || null,
+                userId,
             },
         });
 

@@ -9,6 +9,7 @@
 //   Generation 3: Emily, James
 
 import { PrismaClient, Gender, UnionType, ParentalRole } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -21,6 +22,18 @@ async function main() {
 
     console.log("🌱 Seeding database with sample family...");
 
+    // Create a default test user
+    const passwordHash = await bcrypt.hash("password123", 10);
+    const user = await prisma.user.upsert({
+        where: { email: "test@example.com" },
+        update: {},
+        create: {
+            email: "test@example.com",
+            name: "Test User",
+            passwordHash,
+        },
+    });
+
     // ---- Generation 1: Grandparents ----
     const harold = await prisma.individual.create({
         data: {
@@ -29,6 +42,7 @@ async function main() {
             birthDate: new Date("1940-03-15"),
             gender: Gender.male,
             bio: "Family patriarch. Retired schoolteacher.",
+            userId: user.id,
         },
     });
 
@@ -39,6 +53,7 @@ async function main() {
             birthDate: new Date("1942-07-22"),
             gender: Gender.female,
             bio: "Family matriarch. Avid gardener.",
+            userId: user.id,
         },
     });
 
@@ -50,6 +65,7 @@ async function main() {
             birthDate: new Date("1965-11-08"),
             gender: Gender.male,
             bio: "Engineer. Son of Harold and Margaret.",
+            userId: user.id,
         },
     });
 
@@ -60,6 +76,7 @@ async function main() {
             birthDate: new Date("1967-01-30"),
             gender: Gender.female,
             bio: "Robert's first wife. Nurse.",
+            userId: user.id,
         },
     });
 
@@ -70,6 +87,7 @@ async function main() {
             birthDate: new Date("1970-05-12"),
             gender: Gender.female,
             bio: "Robert's second wife. Artist.",
+            userId: user.id,
         },
     });
 
@@ -80,6 +98,7 @@ async function main() {
             birthDate: new Date("1972-09-03"),
             gender: Gender.female,
             bio: "Adopted daughter of Harold and Margaret.",
+            userId: user.id,
         },
     });
 
@@ -91,6 +110,7 @@ async function main() {
             birthDate: new Date("1992-04-18"),
             gender: Gender.female,
             bio: "Daughter of Robert and Susan. Software developer.",
+            userId: user.id,
         },
     });
 
@@ -101,6 +121,7 @@ async function main() {
             birthDate: new Date("2000-12-25"),
             gender: Gender.male,
             bio: "Son of Robert and Linda. College student.",
+            userId: user.id,
         },
     });
 
@@ -178,7 +199,7 @@ async function main() {
     const indCount = await prisma.individual.count();
     const unionCount = await prisma.union.count();
     const childCount = await prisma.unionChild.count();
-    console.log(`✅ Seeded ${indCount} individuals, ${unionCount} unions, ${childCount} child links.`);
+    console.log(`✅ Seeded 1 test user, ${indCount} individuals, ${unionCount} unions, ${childCount} child links.`);
 }
 
 main()

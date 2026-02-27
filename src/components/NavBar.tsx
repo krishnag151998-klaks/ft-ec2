@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 
 export default function NavBar() {
@@ -23,19 +23,19 @@ export default function NavBar() {
                             {session.user.name || session.user.email}
                         </span>
                         <button
-                            onClick={() => signOut({ callbackUrl: "/login" })}
+                            onClick={() => signOut({ callbackUrl: "/" })}
                             className="px-4 py-2 text-sm font-medium text-[var(--background)] bg-[var(--text-color)] hover:opacity-90 rounded-xl transition-opacity"
                         >
                             Sign Out
                         </button>
                     </>
                 ) : (
-                    <Link
-                        href="/login"
+                    <button
+                        onClick={() => signIn("cognito", { callbackUrl: "/" })}
                         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
                     >
                         Sign In
-                    </Link>
+                    </button>
                 )}
             </div>
         </nav>

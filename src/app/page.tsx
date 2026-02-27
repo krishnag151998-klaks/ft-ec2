@@ -3,6 +3,7 @@ import FamilyTree from "@/components/FamilyTree";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
+import ClientSignInButton from "@/components/ClientSignInButton";
 
 export const dynamic = "force-dynamic";
 
@@ -73,12 +74,12 @@ export default async function HomePage() {
                     </div>
                 ) : (
                     <div className="mt-10 flex gap-4 justify-center">
-                        <Link href="/register" className="px-6 py-3 font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors">
+                        <ClientSignInButton className="px-6 py-3 font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors">
                             Create your tree
-                        </Link>
-                        <Link href="/login" className="px-6 py-3 font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+                        </ClientSignInButton>
+                        <ClientSignInButton className="px-6 py-3 font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
                             Log in
-                        </Link>
+                        </ClientSignInButton>
                     </div>
                 )}
             </header>
@@ -92,9 +93,9 @@ export default async function HomePage() {
                         <div className="text-center p-8 max-w-md">
                             <h3 className="text-xl font-semibold mb-2 text-[var(--text-color)]">Start mapping your ancestry</h3>
                             <p className="text-[var(--muted-color)] mb-6">Create an account to start adding family members, building relationships, and tracing your lineage through generations.</p>
-                            <Link href="/register" className="px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors inline-block font-medium">
+                            <ClientSignInButton className="px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors inline-block font-medium">
                                 Get Started for Free
-                            </Link>
+                            </ClientSignInButton>
                         </div>
                     </div>
                 )}

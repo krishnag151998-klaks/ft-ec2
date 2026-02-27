@@ -1,8 +1,7 @@
 import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import CognitoProvider from "next-auth/providers/cognito";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma) as any,
@@ -10,44 +9,11 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
     },
     providers: [
-        CredentialsProvider({
-            name: "Email and Password",
-            credentials: {
-                email: { label: "Email", type: "email", placeholder: "test@example.com" },
-                password: { label: "Password", type: "password" },
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials.password) {
-                    throw new Error("Invalid credentials");
-                }
-
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials.email,
-                    },
-                });
-
-                if (!user || !user.passwordHash) {
-                    throw new Error("Invalid credentials");
-                }
-
-                const isCorrectPassword = await bcrypt.compare(
-                    credentials.password,
-                    user.passwordHash
-                );
-
-                if (!isCorrectPassword) {
-                    throw new Error("Invalid credentials");
-                }
-
-                return {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    image: user.image,
-                };
-            },
-        }),
+        CognitoProvider({
+            clientId: process.env.COGNITO_CLIENT_ID || "",
+            clientSecret: process.env.COGNITO_CLIENT_SECRET || "",
+            issuer: process.env.COGNITO_ISSUER,
+        })
     ],
     callbacks: {
         async jwt({ token, user }) {
@@ -62,10 +28,6 @@ export const authOptions: NextAuthOptions = {
             }
             return session;
         },
-    },
-    pages: {
-        signIn: "/login",
-        newUser: "/register",
     },
     secret: process.env.NEXTAUTH_SECRET,
 };

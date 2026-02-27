@@ -17,7 +17,6 @@
     "@prisma/client": "^5.22.0",
     "@types/dagre": "^0.7.53",
     "@xyflow/react": "^12.4.4",
-    "bcryptjs": "^3.0.3",
     "dagre": "^0.8.5",
     "next": "14.2.21",
     "next-auth": "^4.24.13",
@@ -29,6 +28,7 @@
     "@types/node": "^20.17.10",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "bcryptjs": "^3.0.3",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"

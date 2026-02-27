@@ -10,7 +10,9 @@ const getDatabaseUrl = () => {
     }
     const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
     if (DB_HOST && DB_PORT && DB_USER && DB_PASSWORD && DB_NAME) {
-        return `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=public`;
+        const encodedUser = encodeURIComponent(DB_USER);
+        const encodedPassword = encodeURIComponent(DB_PASSWORD);
+        return `postgresql://${encodedUser}:${encodedPassword}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=public`;
     }
     // Fallback to whatever is defined in prisma.schema
     return undefined;

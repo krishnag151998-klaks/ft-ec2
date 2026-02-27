@@ -33,6 +33,10 @@ npm install
 echo "--> Generating Prisma Client..."
 npx prisma generate
 
+# 6b. Run Database Migrations
+echo "--> Running database migrations..."
+npx prisma migrate deploy
+
 # 7. Build the Next.js application
 echo "--> Building the Next.js application..."
 npm run build

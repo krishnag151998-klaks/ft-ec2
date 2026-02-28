@@ -66,7 +66,7 @@ export default async function HomePage() {
                 {/* Background Decorative Elements */}
                 <div className="lp-blob lp-blob-blue" />
                 <div className="lp-blob lp-blob-indigo" />
-                
+
                 <div className="lp-container">
                     {session ? (
                         <div className="lp-fade-in">
@@ -78,7 +78,7 @@ export default async function HomePage() {
                                     Pick up where you left off. Continue expanding your lineage and preserving your history.
                                 </p>
                             </div>
-                            
+
                             <div className="lp-stats-grid">
                                 <div className="lp-stat-card">
                                     <span className="lp-stat-number lp-text-blue">{individualCount}</span>
@@ -93,7 +93,7 @@ export default async function HomePage() {
                                     <span className="lp-stat-label">Generations</span>
                                 </div>
                             </div>
-                            
+
                             <div className="lp-tree-container">
                                 <FamilyTree />
                             </div>
@@ -107,22 +107,22 @@ export default async function HomePage() {
                                     Interactive Genealogy Platform
                                 </div>
                                 <h1>
-                                    Map your <br className="lp-hide-mobile"/>
+                                    Map your <br className="lp-hide-mobile" />
                                     <span className="lp-gradient-text">heritage</span> with elegance.
                                 </h1>
                                 <p className="lp-subtitle">
                                     A beautifully engineered platform to trace your lineage, document complex relationships, and preserve your family story for generations to come.
                                 </p>
-                                
+
                                 <div className="lp-hero-actions">
-                                    <ClientSignInButton className="lp-btn-primary">
+                                    <Link href="/register" className="lp-btn-primary lp-btn-link">
                                         Start Your Tree Free
-                                    </ClientSignInButton>
+                                    </Link>
                                     <ClientSignInButton className="lp-btn-secondary">
                                         Sign In to Account
                                     </ClientSignInButton>
                                 </div>
-                                
+
                                 <p className="lp-hero-footnote">
                                     No credit card required. Setup takes seconds.
                                 </p>
@@ -154,7 +154,7 @@ export default async function HomePage() {
                                             <div className="lp-node lp-node-child"></div>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Glass Overlay UI Elements */}
                                     <div className="lp-overlay-top">
                                         <div className="lp-glass-badge">
@@ -166,7 +166,7 @@ export default async function HomePage() {
                                             <div className="lp-user-count">+</div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="lp-overlay-bottom">
                                         <div className="lp-toast-icon">
                                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>

@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import FamilyTree from "@/components/FamilyTree";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import Link from "next/link";
 import ClientSignInButton from "@/components/ClientSignInButton";
 
 export const dynamic = "force-dynamic";
@@ -115,9 +114,9 @@ export default async function HomePage() {
                                 </p>
 
                                 <div className="lp-hero-actions">
-                                    <Link href="/register" className="lp-btn-primary lp-btn-link">
+                                    <ClientSignInButton className="lp-btn-primary">
                                         Start Your Tree Free
-                                    </Link>
+                                    </ClientSignInButton>
                                     <ClientSignInButton className="lp-btn-secondary">
                                         Sign In to Account
                                     </ClientSignInButton>

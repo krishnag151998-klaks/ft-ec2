@@ -1,6 +1,5 @@
 name: Deploy to EC2
 
-# This tells GitHub to run the pipeline every time you push to the 'main' branch
 on:
   push:
     branches:
@@ -15,19 +14,32 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Execute deployment commands via SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
           script: |
-            # Navigate to your project directory (change this to your actual folder path)
-            cd /path/to/your/project/folder
-            
-            # Pull the latest code from GitHub
+            cd /home/ubuntu/familytree
+
+            echo "==> Pulling latest code..."
             git pull origin main
-            
-            # Add any other build or restart commands here!
-            # Example: npm install
-            # Example: sudo systemctl restart your-app
+
+            echo "==> Installing dependencies..."
+            npm ci --production=false
+
+            echo "==> Generating Prisma client..."
+            npx prisma generate
+
+            echo "==> Running database migrations..."
+            npx prisma migrate deploy
+
+            echo "==> Building Next.js app..."
+            npm run build
+
+            echo "==> Restarting application..."
+            pm2 restart familytree || pm2 start npm --name "familytree" -- run start
+
+            echo "==> Deploy complete!"

@@ -33,6 +33,8 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "bcryptjs": "^3.0.3",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.21",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"

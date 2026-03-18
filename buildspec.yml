@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing NPM dependencies...
+      - npm ci
+      - npx prisma generate
+  build:
+    commands:
+      - echo Running Linter...
+      - npm run lint
+      - echo Building Next.js project...
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  ignore-paths:
+    - '.git/**/*'

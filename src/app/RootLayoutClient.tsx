@@ -14,7 +14,7 @@ export default function RootLayoutClient({ children }: { children: ReactNode }) 
     return (
         <Providers>
             {!isCustomLandingPage && <NavBar />}
-            {!isCustomLandingPage && <ThemeToggle />}
+            <ThemeToggle />
             {children}
         </Providers>
     );

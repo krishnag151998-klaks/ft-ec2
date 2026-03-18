@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import FamilyTree from "@/components/FamilyTree";
+import TreeViewWrapper from "@/components/TreeViewWrapper";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import ClientSignInButton from "@/components/ClientSignInButton";
@@ -94,7 +94,7 @@ export default async function HomePage() {
                             </div>
 
                             <div className="lp-tree-container">
-                                <FamilyTree />
+                                <TreeViewWrapper />
                             </div>
                         </div>
                     ) : (

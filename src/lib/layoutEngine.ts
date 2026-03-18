@@ -1,45 +1,25 @@
 // =============================================================================
-// Butterfly Pedigree Layout Engine
-// Pure layout logic — no React dependencies
+// Standard Top-Down Pedigree Layout Engine
 // =============================================================================
 
 import type { Node, Edge } from "@xyflow/react";
 import type { Individual, UnionData } from "@/types/familytree";
 
-// ---------------------------------------------------------------------------
-// Layout Constants
-// ---------------------------------------------------------------------------
-
 export const NODE_W = 200;
 export const NODE_H = 120;
 export const UNION_DOT = 10;
-const MIN_H_SPACING = 150;
-const ROW_HEIGHT = 280;
-const SPOUSE_GAP = 40;
-const WING_OFFSET = 520;
-
-// ---------------------------------------------------------------------------
-// Edge styling presets
-// ---------------------------------------------------------------------------
+const MIN_H_SPACING = 80;
+const ROW_HEIGHT = 220;
+const SPOUSE_GAP = 60;
 
 const LABEL_STYLE = { fontSize: "0.65rem", fontWeight: 600, fill: "#6b6b6b" };
 const LABEL_BG = { fill: "#ffffff", fillOpacity: 0.95 };
 const LABEL_PAD: [number, number] = [4, 8];
 
-// ---------------------------------------------------------------------------
-// DFS Generation Assignment
-// ---------------------------------------------------------------------------
-
 function assignGenerations(individuals: Individual[], unionMap: Map<string, UnionData>) {
     const indMap = new Map<string, Individual>();
     individuals.forEach((i) => indMap.set(i.id, i));
-
     const generation = new Map<string, number>();
-
-    const childToUnion = new Map<string, string>();
-    unionMap.forEach((u) => {
-        u.children.forEach((c) => childToUnion.set(c.childId, u.id));
-    });
 
     const unionToChildren = new Map<string, string[]>();
     unionMap.forEach((u) => {
@@ -47,7 +27,7 @@ function assignGenerations(individuals: Individual[], unionMap: Map<string, Unio
     });
 
     function dfs(id: string, gen: number) {
-        if (generation.has(id) && generation.get(id)! <= gen) return;
+        if (generation.has(id) && generation.get(id)! >= gen) return;
         generation.set(id, gen);
 
         const ind = indMap.get(id)!;
@@ -85,16 +65,17 @@ function assignGenerations(individuals: Individual[], unionMap: Map<string, Unio
         });
     }
 
+    // Normalize generations so min is 0
+    let minGen = Infinity;
+    generation.forEach((g) => { if (g < minGen) minGen = g; });
+    if (minGen < 0) {
+        generation.forEach((g, id) => generation.set(id, g - minGen));
+    }
+
     return generation;
 }
 
-// ---------------------------------------------------------------------------
-// Butterfly Pedigree Layout
-// ---------------------------------------------------------------------------
-
-type Wing = "left" | "center" | "right";
-
-export function buildButterflyLayout(individuals: Individual[]) {
+export function buildStandardLayout(individuals: Individual[]) {
     if (individuals.length === 0) return { nodes: [], edges: [] };
 
     const indMap = new Map<string, Individual>();
@@ -114,211 +95,120 @@ export function buildButterflyLayout(individuals: Individual[]) {
     // 1. Assign generations
     const generation = assignGenerations(individuals, unionMap);
 
-    // 2. Find the pivot — the person who has parents AND has children
-    let pivot: Individual | null = null;
-    let bestScore = -1;
-
-    for (const ind of individuals) {
-        const hasParents = ind.childOf.length > 0;
-        const allU = [...ind.unionsAsPartner1, ...ind.unionsAsPartner2];
-        const kidCount = allU.reduce((s, u) => s + u.children.length, 0);
-        if (hasParents && kidCount > 0 && kidCount > bestScore) {
-            bestScore = kidCount;
-            pivot = ind;
-        }
-    }
-
-    // 3. Classify nodes into wings
-    const wing = new Map<string, Wing>();
-
-    if (pivot) {
-        // Mark pivot + all spouses + all descendants as CENTER
-        const centerQueue = [pivot.id];
-        const centerVisited = new Set<string>();
-
-        while (centerQueue.length > 0) {
-            const id = centerQueue.shift()!;
-            if (centerVisited.has(id)) continue;
-            centerVisited.add(id);
-            wing.set(id, "center");
-
-            const ind = indMap.get(id)!;
-            const allU = [...ind.unionsAsPartner1, ...ind.unionsAsPartner2];
-            allU.forEach((u) => {
-                // Mark spouse as center
-                const sid = u.partner1Id === id ? u.partner2Id : u.partner1Id;
-                if (sid && !centerVisited.has(sid)) {
-                    wing.set(sid, "center");
-                    centerVisited.add(sid);
-                }
-                // Mark children as center (and recurse into their descendants)
-                u.children.forEach((c) => {
-                    if (!centerVisited.has(c.childId)) centerQueue.push(c.childId);
-                });
-            });
-        }
-
-        // Determine father / mother from pivot's parents
-        const parentLink = pivot.childOf[0]?.union;
-        if (parentLink) {
-            const p1 = indMap.get(parentLink.partner1Id);
-            const p2 = parentLink.partner2Id ? indMap.get(parentLink.partner2Id) : null;
-
-            let fatherId: string | null = null;
-            let motherId: string | null = null;
-
-            if (p1?.gender === "male") {
-                fatherId = p1.id;
-                motherId = p2?.id || null;
-            } else if (p2?.gender === "male") {
-                fatherId = p2.id;
-                motherId = p1?.id || null;
-            } else {
-                fatherId = p1?.id || null;
-                motherId = p2?.id || null;
-            }
-
-            // BFS to classify an ancestor tree into a wing
-            const classifyWing = (rootId: string, side: Wing) => {
-                const q = [rootId];
-                const visited = new Set<string>();
-                while (q.length > 0) {
-                    const id = q.shift()!;
-                    if (visited.has(id) || wing.get(id) === "center") continue;
-                    visited.add(id);
-                    wing.set(id, side);
-
-                    const ind = indMap.get(id);
-                    if (!ind) continue;
-
-                    // Go up to parents
-                    ind.childOf.forEach((co) => {
-                        if (!visited.has(co.union.partner1Id)) q.push(co.union.partner1Id);
-                        if (co.union.partner2Id && !visited.has(co.union.partner2Id))
-                            q.push(co.union.partner2Id);
-                    });
-
-                    // Include siblings
-                    ind.childOf.forEach((co) => {
-                        const sibs = unionToChildren.get(co.unionId) || [];
-                        sibs.forEach((s) => {
-                            if (!visited.has(s) && !wing.has(s)) q.push(s);
-                        });
-                    });
-                }
-            }
-
-            if (fatherId) classifyWing(fatherId, "left");
-            if (motherId) classifyWing(motherId, "right");
-        }
-    }
-
-    // Mark unclassified as center
+    // 2. Group by generation
+    const genGroups = new Map<number, Individual[]>();
     individuals.forEach((ind) => {
-        if (!wing.has(ind.id)) wing.set(ind.id, "center");
-    });
-
-    // 4. Group by wing & generation
-    const groups: Record<Wing, Map<number, Individual[]>> = {
-        left: new Map(),
-        center: new Map(),
-        right: new Map(),
-    };
-
-    individuals.forEach((ind) => {
-        const w = wing.get(ind.id) || "center";
         const g = generation.get(ind.id) || 0;
-        if (!groups[w].has(g)) groups[w].set(g, []);
-        groups[w].get(g)!.push(ind);
+        if (!genGroups.has(g)) genGroups.set(g, []);
+        genGroups.get(g)!.push(ind);
     });
 
-    // 5. Position nodes
     const nodes: Node[] = [];
     const edges: Edge[] = [];
     const nodePos = new Map<string, { x: number; y: number }>();
     const unionMidpoints = new Map<string, string>();
 
-    function positionWing(group: Map<number, Individual[]>, centerX: number) {
-        const sortedGens = Array.from(group.keys()).sort((a, b) => a - b);
+    const sortedGens = Array.from(genGroups.keys()).sort((a, b) => a - b);
 
-        sortedGens.forEach((gen) => {
-            const members = group.get(gen)!;
-            const y = gen * ROW_HEIGHT;
+    // 3. Position nodes generation by generation
+    sortedGens.forEach((gen) => {
+        const members = genGroups.get(gen)!;
+        const y = gen * ROW_HEIGHT;
 
-            // Build render units (couples + singles)
-            type RU = { ids: string[]; unionId?: string };
-            const units: RU[] = [];
-            const inUnit = new Set<string>();
+        type RenderUnit = { ids: string[]; unionId?: string };
+        const units: RenderUnit[] = [];
+        const inUnit = new Set<string>();
 
-            // Couples first
-            members.forEach((ind) => {
-                if (inUnit.has(ind.id)) return;
-                const allU = [...ind.unionsAsPartner1, ...ind.unionsAsPartner2];
-                for (const u of allU) {
-                    const sid = u.partner1Id === ind.id ? u.partner2Id : u.partner1Id;
-                    if (
-                        sid &&
-                        generation.get(sid) === gen &&
-                        wing.get(sid) === wing.get(ind.id) &&
-                        !inUnit.has(sid)
-                    ) {
-                        units.push({ ids: [ind.id, sid], unionId: u.id });
-                        inUnit.add(ind.id);
-                        inUnit.add(sid);
-                        break;
-                    }
+        // Build couples
+        members.forEach((ind) => {
+            if (inUnit.has(ind.id)) return;
+            const allU = [...ind.unionsAsPartner1, ...ind.unionsAsPartner2];
+            for (const u of allU) {
+                const sid = u.partner1Id === ind.id ? u.partner2Id : u.partner1Id;
+                if (sid && generation.get(sid) === gen && !inUnit.has(sid)) {
+                    units.push({ ids: [ind.id, sid], unionId: u.id });
+                    inUnit.add(ind.id);
+                    inUnit.add(sid);
+                    break;
                 }
-            });
-
-            // Singles
-            members.forEach((ind) => {
-                if (!inUnit.has(ind.id)) units.push({ ids: [ind.id] });
-            });
-
-            // Widths
-            const unitWidths = units.map((u) =>
-                u.ids.length === 2 ? 2 * NODE_W + SPOUSE_GAP : NODE_W
-            );
-            const totalWidth =
-                unitWidths.reduce((s, w) => s + w, 0) +
-                Math.max(0, units.length - 1) * MIN_H_SPACING;
-
-            let xCursor = centerX - totalWidth / 2;
-
-            units.forEach((unit, uIdx) => {
-                unit.ids.forEach((id, idx) => {
-                    const ind = indMap.get(id)!;
-                    const x = xCursor + idx * (NODE_W + SPOUSE_GAP);
-
-                    nodes.push({
-                        id: String(ind.id),
-                        type: "person",
-                        position: { x, y },
-                        selectable: true,
-                        data: {
-                            firstName: ind.firstName,
-                            lastName: ind.lastName,
-                            gender: ind.gender,
-                            birthDate: ind.birthDate,
-                            deathDate: ind.deathDate,
-                            bio: ind.bio,
-                        },
-                    });
-                    nodePos.set(id, { x, y });
-                });
-
-                // Union midpoints are now handled globally after positioning everything
-
-                xCursor += unitWidths[uIdx] + MIN_H_SPACING;
-            });
+            }
         });
-    }
 
-    positionWing(groups.left, -WING_OFFSET);
-    positionWing(groups.center, 0);
-    positionWing(groups.right, WING_OFFSET);
+        // Singles
+        members.forEach((ind) => {
+            if (!inUnit.has(ind.id)) units.push({ ids: [ind.id] });
+        });
 
-    // 5.5 Global Union Midpoints & Spouse Edges
+        // Sort units to align children under parents
+        const getUnitAvgX = (unit: RenderUnit) => {
+            let sumX = 0, count = 0;
+            unit.ids.forEach(id => {
+                const ind = indMap.get(id)!;
+                ind.childOf.forEach(co => {
+                    const p1x = nodePos.get(co.union.partner1Id)?.x;
+                    const p2x = co.union.partner2Id ? nodePos.get(co.union.partner2Id)?.x : undefined;
+
+                    if (p1x !== undefined && p2x !== undefined) {
+                        sumX += (p1x + p2x) / 2;
+                        count++;
+                    } else if (p1x !== undefined) {
+                        sumX += p1x;
+                        count++;
+                    } else if (p2x !== undefined) {
+                        sumX += p2x;
+                        count++;
+                    }
+                });
+            });
+            return count > 0 ? sumX / count : 0;
+        };
+
+        // If not gen 0, sort based on parent positions
+        if (gen > 0) {
+            units.sort((a, b) => getUnitAvgX(a) - getUnitAvgX(b));
+        }
+
+        // Layout units horizontally
+        const unitWidths = units.map((u) => u.ids.length === 2 ? 2 * NODE_W + SPOUSE_GAP : NODE_W);
+        const totalWidth = unitWidths.reduce((s, w) => s + w, 0) + Math.max(0, units.length - 1) * MIN_H_SPACING;
+
+        // If parents exist, try to center the whole row roughly around the average parent X
+        let rowTargetCenter = 0;
+        let pSum = 0, pCount = 0;
+        units.forEach(u => {
+            const avg = getUnitAvgX(u);
+            if (avg !== 0) { pSum += avg; pCount++; }
+        });
+        if (pCount > 0) rowTargetCenter = pSum / pCount;
+
+        let xCursor = rowTargetCenter - totalWidth / 2;
+
+        units.forEach((unit, uIdx) => {
+            unit.ids.forEach((id, idx) => {
+                const ind = indMap.get(id)!;
+                const x = xCursor + idx * (NODE_W + SPOUSE_GAP);
+
+                nodes.push({
+                    id: String(ind.id),
+                    type: "person",
+                    position: { x, y },
+                    selectable: true,
+                    data: {
+                        firstName: ind.firstName,
+                        lastName: ind.lastName,
+                        gender: ind.gender,
+                        birthDate: ind.birthDate,
+                        deathDate: ind.deathDate,
+                        bio: ind.bio,
+                    },
+                });
+                nodePos.set(id, { x, y });
+            });
+            xCursor += unitWidths[uIdx] + MIN_H_SPACING;
+        });
+    });
+
+    // 4. Global Union Midpoints & Spouse Edges
     unionMap.forEach((u) => {
         const uId = u.id;
         const p1Id = u.partner1Id;
@@ -337,18 +227,16 @@ export function buildButterflyLayout(individuals: Individual[]) {
 
         const midId = `union-mid-${uId}`;
 
-        // Ensure nodes contains the union midpoint
         nodes.push({
             id: String(midId),
             type: "union",
             position: { x: midX, y: midY },
             data: { partner1Id: String(p1Id), partner2Id: p2Id ? String(p2Id) : undefined },
-            draggable: false,
+            draggable: false,     // Allow layout engine to rigidly fix positions
             selectable: false,
         });
         unionMidpoints.set(uId, String(midId));
 
-        // Create spouse edges if both partners are located
         if (p2Id && pos1 && pos2) {
             const isDivorced = u.unionType === "divorced";
             const isPartnership = u.unionType === "partnership";
@@ -356,19 +244,27 @@ export function buildButterflyLayout(individuals: Individual[]) {
             const spouseColor = isDivorced ? "#d45d5d" : "#7a9e7e";
             const spouseDash = "8 4";
 
+            const p1IsLeft = pos1.x < pos2.x;
+            const leftId = p1IsLeft ? String(p1Id) : String(p2Id);
+            const rightId = p1IsLeft ? String(p2Id) : String(p1Id);
+
             edges.push({
                 id: String(`sp-L-${uId}`),
-                source: String(p1Id),
+                source: leftId,
+                sourceHandle: "right",
                 target: String(midId),
-                type: "step",
+                targetHandle: "left",
+                type: "straight",
                 style: { stroke: spouseColor, strokeWidth: 2.5, strokeDasharray: spouseDash },
             });
 
             edges.push({
                 id: String(`sp-R-${uId}`),
                 source: String(midId),
-                target: String(p2Id),
-                type: "step",
+                sourceHandle: "right",
+                target: rightId,
+                targetHandle: "left",
+                type: "straight",
                 label: spouseLabel,
                 style: { stroke: spouseColor, strokeWidth: 2.5, strokeDasharray: spouseDash },
                 labelStyle: LABEL_STYLE,
@@ -379,7 +275,7 @@ export function buildButterflyLayout(individuals: Individual[]) {
         }
     });
 
-    // 6. Child edges (smoothstep / orthogonal)
+    // 5. Child Edges 
     unionMap.forEach((u) => {
         const childIds = unionToChildren.get(u.id) || [];
         if (childIds.length === 0) return;
@@ -410,7 +306,9 @@ export function buildButterflyLayout(individuals: Individual[]) {
             edges.push({
                 id: String(`child-${u.id}-${childId}`),
                 source: String(sourceId),
+                sourceHandle: "bottom",
                 target: String(childId),
+                targetHandle: "top",
                 type: "smoothstep",
                 label,
                 style: { stroke: color, strokeWidth: 2, strokeDasharray: dash },
@@ -422,47 +320,6 @@ export function buildButterflyLayout(individuals: Individual[]) {
         });
     });
 
-    // 7. Generation label nodes
-    const allGens = new Set<number>();
-    individuals.forEach((ind) => allGens.add(generation.get(ind.id) || 0));
-    const sortedGens = Array.from(allGens).sort((a, b) => a - b);
-
-    // Find leftmost x position for label placement
-    let minX = 0;
-    nodePos.forEach((pos) => {
-        if (pos.x < minX) minX = pos.x;
-    });
-
-    sortedGens.forEach((gen) => {
-        const ordinal = gen + 1;
-        const suffix =
-            ordinal === 1 ? "st" : ordinal === 2 ? "nd" : ordinal === 3 ? "rd" : "th";
-        const y = gen * ROW_HEIGHT;
-
-        nodes.push({
-            id: String(`gen-label-${gen}`),
-            type: "default",
-            position: { x: minX - 220, y: y + NODE_H / 2 - 18 },
-            data: { label: `${ordinal}${suffix} Gen` },
-            draggable: false,
-            selectable: false,
-            style: {
-                background: "#ffffff",
-                border: "1px solid rgba(122, 158, 126, 0.25)",
-                borderRadius: "10px",
-                color: "#7a9e7e",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                padding: "6px 14px",
-                width: "auto",
-                textAlign: "center" as const,
-                pointerEvents: "none" as const,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            },
-        });
-    });
-
-    // 8. Deduplicate nodes and edges
     const uniqueNodes = Array.from(new Map(nodes.map(n => [String(n.id), n])).values());
     const uniqueEdges = Array.from(new Map(edges.map(e => [String(e.id), e])).values());
 

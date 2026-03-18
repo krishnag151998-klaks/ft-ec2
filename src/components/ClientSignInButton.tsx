@@ -11,7 +11,7 @@ interface ClientSignInButtonProps {
 export default function ClientSignInButton({ children, className, style }: ClientSignInButtonProps) {
     return (
         <button
-            onClick={() => signIn("cognito", { callbackUrl: "/" })}
+            onClick={() => signIn("google", { callbackUrl: "/" })}
             className={className}
             style={style}
         >

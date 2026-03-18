@@ -35,15 +35,13 @@ export default function AddPersonButton({ onPersonAdded }: AddPersonButtonProps)
     }, [onPersonAdded]);
 
     return (
-        <div className="tree-actions">
-            <button
-                className="action-btn action-btn-primary"
-                onClick={handleClick}
-                disabled={loading}
-            >
-                <span className="action-icon">+</span>
-                {loading ? "Adding..." : "Add Person"}
-            </button>
-        </div>
+        <button
+            className="action-btn action-btn-primary"
+            onClick={handleClick}
+            disabled={loading}
+        >
+            <span className="action-icon">+</span>
+            {loading ? "Adding..." : "Add Person"}
+        </button>
     );
 }

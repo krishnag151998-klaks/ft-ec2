@@ -15,7 +15,26 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var stored = localStorage.getItem('theme');
+                                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                                    if (stored === 'dark' || (!stored && prefersDark)) {
+                                        document.documentElement.classList.add('dark-theme');
+                                    } else {
+                                        document.documentElement.classList.remove('dark-theme');
+                                    }
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
+            </head>
             <body>
                 <RootLayoutClient>{children}</RootLayoutClient>
             </body>

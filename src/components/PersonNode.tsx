@@ -19,10 +19,6 @@ function formatDate(dateStr?: string | null): string {
     return d.getFullYear().toString();
 }
 
-function getInitials(firstName: string, lastName: string): string {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-}
-
 function getGenderEmoji(gender: string): string {
     switch (gender) {
         case "male":
@@ -39,22 +35,26 @@ function PersonNodeComponent({ data }: NodeProps) {
     const birth = formatDate(d.birthDate);
     const death = formatDate(d.deathDate);
     const dateStr = death ? `${birth} — ${death}` : birth ? `b. ${birth}` : "";
+    const isDeceased = !!d.deathDate;
 
     return (
-        <div className={`person-node ${d.gender}`}>
-            <Handle type="target" position={Position.Top} />
+        <div className={`person-node ${d.gender}${isDeceased ? " person-node--deceased" : ""}`}>
+            <Handle type="target" position={Position.Top} id="top" />
+            <Handle type="target" position={Position.Left} id="left" style={{ opacity: 0 }} />
+            <Handle type="source" position={Position.Right} id="right" style={{ opacity: 0 }} />
 
             <div className="node-header">
                 <div className="avatar">{getGenderEmoji(d.gender)}</div>
                 <div className="name">
                     {d.firstName} {d.lastName}
+                    {isDeceased && <span className="deceased-marker" title="Deceased">†</span>}
                 </div>
             </div>
 
             {dateStr && <div className="dates">{dateStr}</div>}
             {d.bio && <div className="bio">{d.bio}</div>}
 
-            <Handle type="source" position={Position.Bottom} />
+            <Handle type="source" position={Position.Bottom} id="bottom" />
         </div>
     );
 }

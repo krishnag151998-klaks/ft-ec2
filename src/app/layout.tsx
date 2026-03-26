@@ -3,10 +3,10 @@ import RootLayoutClient from "./RootLayoutClient";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Family Tree — Interactive Lineage Visualization",
+    title: "AncestryMap — The Digital Curator",
     description:
-        "Explore your family history with an interactive, node-based family tree. Track complex relationships including biological parents, step-parents, adoptions, and multiple marriages.",
-    keywords: ["family tree", "genealogy", "lineage", "ancestry", "family history"],
+        "Discover and preserve your heritage with AncestryMap. An interactive, node-based family tree for tracking complex relationships across generations.",
+    keywords: ["family tree", "genealogy", "lineage", "ancestry", "family history", "heritage"],
 };
 
 export default function RootLayout({
@@ -17,6 +17,10 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+                    rel="stylesheet"
+                />
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `

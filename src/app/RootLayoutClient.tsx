@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 
 export default function RootLayoutClient({ children }: { children: ReactNode }) {
     const pathname = usePathname();
-    const isCustomLandingPage = pathname === '/' || pathname === '/register';
+    const isCustomLandingPage = pathname === '/' || pathname === '/register' || pathname === '/signin';
 
     return (
         <Providers>

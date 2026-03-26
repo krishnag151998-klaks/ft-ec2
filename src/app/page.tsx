@@ -44,9 +44,7 @@ export default async function HomePage() {
             {/* Navigation / Header */}
             <nav className="lp-nav">
                 <div className="lp-logo-container">
-                    <div className="lp-logo-icon">
-                        <svg width={24} height={24} className="lp-svg-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    </div>
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.6rem', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontVariationSettings: "'FILL' 1" }}>account_tree</span>
                     <span className="lp-brand">AncestryMap</span>
                 </div>
                 {!session && (
@@ -103,7 +101,7 @@ export default async function HomePage() {
                             <div className="lp-hero-copy">
                                 <div className="lp-badge">
                                     <span className="lp-badge-dot"></span>
-                                    Interactive Genealogy Platform
+                                    The Digital Curator
                                 </div>
                                 <h1>
                                     Map your <br className="lp-hide-mobile" />
@@ -168,11 +166,11 @@ export default async function HomePage() {
 
                                     <div className="lp-overlay-bottom">
                                         <div className="lp-toast-icon">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                            <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>auto_awesome</span>
                                         </div>
                                         <div className="lp-toast-text">
-                                            <div className="lp-toast-title">New Connection Added</div>
-                                            <div className="lp-toast-desc">Sarah & Michael created a union</div>
+                                            <div className="lp-toast-title">Curator Insight</div>
+                                            <div className="lp-toast-desc">3 matching archive records found</div>
                                         </div>
                                     </div>
                                 </div>

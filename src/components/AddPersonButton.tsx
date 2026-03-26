@@ -40,7 +40,7 @@ export default function AddPersonButton({ onPersonAdded }: AddPersonButtonProps)
             onClick={handleClick}
             disabled={loading}
         >
-            <span className="action-icon">+</span>
+            <span className="material-symbols-outlined action-icon" style={{ fontSize: '1.1rem' }}>person_add</span>
             {loading ? "Adding..." : "Add Person"}
         </button>
     );

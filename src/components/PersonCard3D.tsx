@@ -23,19 +23,19 @@ function formatYear(dateStr?: string | null): string {
     return d.getFullYear().toString();
 }
 
-function getGenderEmoji(gender: string): string {
+function getGenderIcon(gender: string): string {
     switch (gender) {
-        case "male": return "👤";
-        case "female": return "👩";
-        default: return "🧑";
+        case "male": return "person";
+        case "female": return "person_4";
+        default: return "person_3";
     }
 }
 
 function getGenderColor(gender: string): string {
     switch (gender) {
-        case "male": return "#7b9dc4";
-        case "female": return "#c9938a";
-        default: return "#a699c8";
+        case "male": return "#6b7f99";
+        case "female": return "#ac9989";
+        default: return "#6d8a72";
     }
 }
 
@@ -133,7 +133,7 @@ export default function PersonCard3D({
                 >
                     <div className="card3d-header">
                         <div className={`card3d-avatar ${gender}`}>
-                            {getGenderEmoji(gender)}
+                            <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>{getGenderIcon(gender)}</span>
                         </div>
                         <div className="card3d-info">
                             <div className="card3d-name">{firstName} {lastName}</div>

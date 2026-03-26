@@ -19,14 +19,14 @@ function formatDate(dateStr?: string | null): string {
     return d.getFullYear().toString();
 }
 
-function getGenderEmoji(gender: string): string {
+function getGenderIcon(gender: string): string {
     switch (gender) {
         case "male":
-            return "👤";
+            return "person";
         case "female":
-            return "👩";
+            return "person_4";
         default:
-            return "🧑";
+            return "person_3";
     }
 }
 
@@ -44,7 +44,9 @@ function PersonNodeComponent({ data }: NodeProps) {
             <Handle type="source" position={Position.Right} id="right" style={{ opacity: 0 }} />
 
             <div className="node-header">
-                <div className="avatar">{getGenderEmoji(d.gender)}</div>
+                <div className="avatar">
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>{getGenderIcon(d.gender)}</span>
+                </div>
                 <div className="name">
                     {d.firstName} {d.lastName}
                     {isDeceased && <span className="deceased-marker" title="Deceased">†</span>}

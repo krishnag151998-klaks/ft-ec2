@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AncestryMap | Family Tree Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-tertiary": "#ffffff",
+                "surface-dim": "#dadad9",
+                "error-container": "#ffdad6",
+                "on-error-container": "#93000a",
+                "tertiary-fixed-dim": "#4edea3",
+                "surface-container": "#eeeeed",
+                "primary": "#4648d4",
+                "background": "#f9f9f8",
+                "surface-container-high": "#e8e8e7",
+                "surface-bright": "#f9f9f8",
+                "on-primary-fixed": "#07006c",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed-variant": "#005236",
+                "secondary-fixed": "#e9ddff",
+                "on-tertiary-fixed": "#002113",
+                "surface": "#f9f9f8",
+                "on-tertiary-container": "#000703",
+                "surface-container-low": "#f3f4f3",
+                "secondary-container": "#8455ef",
+                "secondary-fixed-dim": "#d0bcff",
+                "surface-variant": "#e2e2e2",
+                "tertiary-fixed": "#6ffbbe",
+                "surface-tint": "#494bd6",
+                "outline": "#767586",
+                "inverse-primary": "#c0c1ff",
+                "secondary": "#6b38d4",
+                "outline-variant": "#c7c4d7",
+                "on-background": "#1a1c1c",
+                "tertiary": "#006c49",
+                "primary-fixed-dim": "#c0c1ff",
+                "on-primary-container": "#fffbff",
+                "inverse-on-surface": "#f1f1f0",
+                "on-secondary-fixed-variant": "#5516be",
+                "tertiary-container": "#00885d",
+                "on-secondary-fixed": "#23005c",
+                "primary-fixed": "#e1e0ff",
+                "primary-container": "#6063ee",
+                "on-primary-fixed-variant": "#2f2ebe",
+                "on-error": "#ffffff",
+                "on-surface": "#1a1c1c",
+                "surface-container-highest": "#e2e2e2",
+                "on-surface-variant": "#464554",
+                "error": "#ba1a1a",
+                "on-secondary-container": "#fffbff",
+                "inverse-surface": "#2f3130",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff"
+              },
+              fontFamily: {
+                "headline": ["Inter"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-grid-dots {
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .tree-line {
+            stroke: #c7c4d7;
+            stroke-width: 2;
+            fill: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col antialiased overflow-hidden">
+<!-- Top Navigation Bar (Shared Component Execution) -->
+<header class="fixed top-0 w-full z-50 px-6 py-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl shadow-[0_40px_40px_-15px_rgba(70,72,212,0.04)]">
+<div class="flex justify-between items-center max-w-[1920px] mx-auto">
+<!-- Left: Brand -->
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-600 text-3xl" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+<h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent tracking-tight">AncestryMap</h1>
+</div>
+<!-- Center: Toggle Navigation (Mapping Shared Component navigation_links) -->
+<nav class="hidden md:flex bg-surface-container-low p-1 rounded-full items-center gap-1">
+<a class="px-6 py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-primary to-primary-container text-white shadow-lg active:scale-95 duration-200 ease-out" href="#">2D Tree</a>
+<a class="px-6 py-2 text-sm font-medium text-slate-500 hover:text-indigo-500 transition-colors hover:bg-indigo-50/50 rounded-full" href="#">Timeline</a>
+<a class="px-6 py-2 text-sm font-medium text-slate-500 hover:text-indigo-500 transition-colors hover:bg-indigo-50/50 rounded-full" href="#">Discover</a>
+<a class="px-6 py-2 text-sm font-medium text-slate-500 hover:text-indigo-500 transition-colors hover:bg-indigo-50/50 rounded-full" href="#">Archive</a>
+</nav>
+<!-- Right: Search & Profile -->
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest/50 border-none rounded-full text-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search tree..." type="text"/>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+<img alt="Sarah Jenkins" class="w-9 h-9 rounded-full border-2 border-primary/20" data-alt="professional portrait of a woman with blonde hair and a friendly expression in high-key soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZMqJF7Yj1Yu7WL4NFKApUcDVttlqto5DFXtdfIsqWk985rrXOsm2yLjGM8SY9SpmWuZBUOqJQzCQIsHIacx6NpBsTTRaDFMS1z-ovniIBK856cHrA_m3fHQXDf4jR_tnoe43_qNpdp4pRfJjNvJmXo6xjp0dl-yCV-EQWe_WVTmr6oHj3TWxtY0o1F_QmTOdv6VIfmtc3bSAIeNVZLfENWNMVXGfj02oPC6QlwiHufpi4wCmN69eqz_HIg1YoaKIYAnvUVpXhNQ"/>
+<div class="hidden sm:block">
+<p class="text-xs font-bold text-on-surface">Sarah Jenkins</p>
+<p class="text-[10px] text-outline uppercase tracking-wider">Premium Member</p>
+</div>
+<button class="material-symbols-outlined text-outline hover:text-error transition-colors p-2" title="Logout">logout</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace Layout -->
+<main class="flex-1 mt-20 flex flex-row overflow-hidden">
+<!-- Left Side: Interactive Workspace -->
+<div class="flex-1 flex flex-col relative overflow-hidden">
+<!-- Toolbar Row -->
+<div class="px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-4 z-10">
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        Welcome back to your <span class="text-on-background">Family Tree</span>
+</h2>
+<p class="text-outline text-sm">Last edited 2 hours ago</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-highest text-primary font-semibold text-sm hover:bg-surface-container-high transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-lg">link</span>
+                        Find Relationship
+                    </button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-highest text-primary font-semibold text-sm hover:bg-surface-container-high transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-primary to-secondary text-white font-bold text-sm shadow-xl hover:shadow-indigo-500/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">person_add</span>
+                        Add Person
+                    </button>
+</div>
+</div>
+<!-- Stats Bar (Asymmetric Layout) -->
+<div class="px-8 flex gap-8 mb-4 z-10">
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-black text-primary">12</span>
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Individuals</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-black text-secondary">5</span>
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Unions</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-black text-tertiary">4</span>
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Generations</span>
+</div>
+</div>
+<!-- Family Tree Area (The Canvas) -->
+<div class="flex-1 m-4 rounded-3xl bg-surface-container-low border border-outline-variant/10 relative overflow-hidden bg-grid-dots">
+<!-- SVG Connections Layer -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none">
+<path class="tree-line" d="M 400 350 L 400 450"></path>
+<path class="tree-line" d="M 600 350 L 600 450"></path>
+<path class="tree-line" d="M 400 450 L 600 450"></path>
+<path class="tree-line" d="M 500 450 L 500 550"></path>
+<!-- Union Node Diamond -->
+<rect class="fill-surface shadow-sm stroke-outline-variant" height="16" transform="rotate(45 500 450)" width="16" x="492" y="442"></rect>
+</svg>
+<!-- Cards (Absolute Positioned for "Flow" feel) -->
+<!-- Generation 1 -->
+<div class="absolute left-[300px] top-[240px] w-64 p-4 rounded-2xl bg-surface-container-lowest shadow-[0_20px_40px_-12px_rgba(70,72,212,0.08)] border-t-4 border-indigo-400">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center border-2 border-indigo-100 overflow-hidden">
+<img alt="Arthur Jenkins" data-alt="vintage black and white portrait of an elderly man with a sharp jawline and kind eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu80DvCz8i2PqOrhLH1FZ3EJ-47q3Q3Q_H7J13YkbCEIQSrtezEhiqLrOt8my8k8-x2paebJXLwe4UJilwXgsxcUASkaHk_6ufsA2-7OvYRRv-82vQ95lwMoxmhlib6F73LdgzE01GkX-gns2MVWYvWhGfjJIt3HDidS9Orl62iP6_5neENY8aSWIWOt7201Uq2RduvPBlVZRDEeTLtodZ84sJ76DJqh8NeqdBkeQhDcrzUuSPpkxFRIYpSDnAEHbPz50QaYdMdQ"/>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Arthur Jenkins</h4>
+<p class="text-xs text-outline font-medium">1912 — 1988</p>
+</div>
+</div>
+</div>
+<div class="absolute left-[580px] top-[240px] w-64 p-4 rounded-2xl bg-surface-container-lowest shadow-[0_20px_40px_-12px_rgba(70,72,212,0.08)] border-t-4 border-violet-400">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-violet-50 flex items-center justify-center border-2 border-violet-100 overflow-hidden">
+<img alt="Martha Thorne" data-alt="sepia toned vintage portrait of a woman with her hair in a classic 1940s style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpUcn2zN7jrw5OKuuuNZckGOidWGMmG9n9hc3AEc0uBKAzAMFiEpTk_prTgo59mXqA5WjSraIh0DfVteY43h_U72Tzkl7Rg21HlLe1yic7RQJ9i22BCpGqHId5sVlpKmcKKqQJCHG1dcgphxAiJfkJOMwHZpCHtKUCbNweaZfsGDgU3CNQZnNmjBoxltRsYGKBFIV_VFWfEdkVkZfT1wAchPXMY5lWNL3WsQx1ina-vow0e9kG5pXvZL1r0VqfkkFq6r_ADmYNDg"/>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Martha Thorne</h4>
+<p class="text-xs text-outline font-medium">1915 — 1992</p>
+</div>
+</div>
+</div>
+<!-- Generation 2 (Selected State) -->
+<div class="absolute left-[440px] top-[550px] w-72 p-5 rounded-2xl bg-surface-container-lowest shadow-[0_30px_60px_-15px_rgba(70,72,212,0.15)] ring-2 ring-primary border-t-4 border-indigo-500">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-primary/30 overflow-hidden">
+<img alt="Elizabeth Jenkins" data-alt="colorized 1960s style portrait of a elegant woman with bright eyes and a soft smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0Das9ZzjKmJsKR5S4QKTjyywi9QHYcB8-YsH6cdoyjbeaP4MTBRTgCyEougB0vL81oaBWC7Qn5psfIXn1LLTGP-OmZ9imurcO391rWeDb6Wp95JzaHiVZ-Oqb6ecyN-Q4QuGN0gfhSIRSYJBay7S0BB7JuU_qmNwr5WF6GzxgJcSMy6tSeJrJ4tcA8Fay0dKCJMZXM-Gq1KvvC2sw_8yEgU4OfxSwLA2qb8BTqV91uxnfvmYXpSBLLg8bKt4hZa5SuWUquNPwKA"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h4 class="font-bold text-on-surface text-lg">Elizabeth Jenkins</h4>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-sm text-outline font-medium">1942 — 2010</p>
+</div>
+</div>
+<div class="mt-4 flex gap-2">
+<span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold rounded-full uppercase">Primary Node</span>
+<span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded-full uppercase">Verified</span>
+</div>
+</div>
+<!-- Flow Controls -->
+<div class="absolute bottom-6 left-6 flex items-center gap-1 bg-surface-container-lowest p-1 rounded-xl shadow-lg border border-outline-variant/20">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-low transition-colors text-outline">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/50"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-low transition-colors text-outline">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/50"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-low transition-colors text-outline">
+<span class="material-symbols-outlined">center_focus_strong</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Side Panel: Detail View (Glassmorphism) -->
+<aside class="w-[420px] h-full glass-panel border-l border-white/20 shadow-[-20px_0_50px_rgba(0,0,0,0.03)] z-20 flex flex-col">
+<div class="p-8 flex-1 overflow-y-auto">
+<div class="flex justify-between items-start mb-8">
+<div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-100 to-violet-100 p-1">
+<img alt="Elizabeth Jenkins" class="w-full h-full rounded-[20px] object-cover" data-alt="medium shot of an elegant woman in her 50s with grey-streaked hair wearing a silk scarf, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNsgVlRJVYcwpbVOd6C_6sqAtyOvZku4kjRkE7sakjV6fgac78q5jBAB5DnNMFc-5TdNFltGSYHpz2a_PkbbpgF6Il_kUIobNFsSxhNN5BnpZ74MXxK28iBnMHYstYGtk1JWmxiosffyA-mSPUNkCc1RnN0g36gOe8yUSw7HvwudSgFCfWKMDRCxzQvR9euRPaQQnhO5eIfvn4agvCL0sm-4y0Eq5DsR9MV450q-qBAftrNqxWCmajvJXZPRmHyHpURzw26EtgOg"/>
+</div>
+<button class="p-2 rounded-full hover:bg-black/5 transition-colors">
+<span class="material-symbols-outlined text-outline">close</span>
+</button>
+</div>
+<h3 class="text-2xl font-black text-on-surface mb-1">Elizabeth Jenkins</h3>
+<p class="text-primary font-semibold text-sm mb-6">Born Nov 12, 1942 • London, UK</p>
+<div class="space-y-8">
+<section>
+<h4 class="text-[10px] font-bold text-outline uppercase tracking-widest mb-3">Biography</h4>
+<p class="text-sm leading-relaxed text-on-surface-variant">
+                            Elizabeth was the first of her family to move across the Atlantic. Born in the heart of London during the war years, she developed a passion for cartography. In 1965, she accepted a position in New York, where she eventually met Samuel and established the Jenkins foundation.
+                        </p>
+</section>
+<section>
+<div class="flex items-center justify-between mb-4">
+<h4 class="text-[10px] font-bold text-outline uppercase tracking-widest">Connections</h4>
+<span class="text-[10px] font-bold text-primary cursor-pointer hover:underline">View All</span>
+</div>
+<div class="space-y-3">
+<!-- Parent -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-white/40 hover:bg-white/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<img alt="Arthur Jenkins" class="w-8 h-8 rounded-full" data-alt="elderly man with classic spectacles and a gentle face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF4vnoDN4eOj3dfZ8cxsc2KbyV15RyeN-Ct7QOaVEKXtW8dldEp7-zABxuCBkwEv4mk549sfAptQZ0-kmwKCaJNe30s6VTK1Ww8_b1Ja_jb53Ka_qua8-djjMK7xu0J2y91yWwFIb8OfoAtb3Nal5x8LU3bxa793wD-4wtOYgOq7TDiBPvi_iCV550b_p8DA3xteNXkOGk0BfCKCt39SK-MRNsQ9WtE_WjLnT14F06EorreghZCvK3nXxI_NTodtUG2moM3WNetw"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Arthur Jenkins</p>
+<p class="text-[10px] text-outline">Father</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-sm opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- Sibling -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-white/40 hover:bg-white/60 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<img alt="Thomas Jenkins" class="w-8 h-8 rounded-full" data-alt="man in his 40s with a professional look and dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGUp7CBihKe4h3zet-O6l1RgKQ1SO7K0pmPCBqGhz0pnCehMwTW71jBMt7PgobvjOAXdDT35QpkjjPQxCX9SAMa7S592RGQVswgOUL4kucqJPfm31MTUD0YyAt4byHm-6WOmtldEUA9zITkybI6yZ6w-mlSoCV4QHYn-jMhTbPqANiI79CcqkMiPtX5XFCa-Je2mDciTI0jXKX3PQ6NnYRXaIAe8KswaUEUeu_1UY6IYIh33pS1pA_gyoiZTMrYzlbGmqntLKLRA"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Thomas Jenkins</p>
+<p class="text-[10px] text-outline">Brother</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-sm opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- Child -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-white/40 hover:bg-white/60 transition-colors cursor-pointer group border-l-2 border-primary/20">
+<div class="flex items-center gap-3">
+<img alt="Sarah Jenkins" class="w-8 h-8 rounded-full" data-alt="smiling woman in her 30s with blonde hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiUuWdJ3BHQaFkYzuhGiUxYuSGPxvLxPZgUPsn05fY1kQfUves077Wvg2iP9l7Q6ThrcLWqKdrlRAskWUYStNVhuEfcMxFHnoOeSGMoNlascEgwHarK3jm8LNTeTNKYTbgN8r7sNv-8FvRK6LwRBB1gURQHNzE6CiwOnazvVn0xjjYrCczLWcT8afn1UsZPRf0haxRKmXUiYxr_agjd4pjCooZ155Kzp1kt6M7PAh_QS9lxLFqh9bp69Rw9RxmUzK5V3NevUObag"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Sarah Jenkins</p>
+<p class="text-[10px] text-outline">Daughter (You)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-sm opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+</div>
+</section>
+<section class="bg-primary/5 rounded-2xl p-5 border border-primary/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<h4 class="text-xs font-bold text-primary">Curator Insight</h4>
+</div>
+<p class="text-xs text-on-primary-fixed-variant leading-relaxed">
+                            We've found 3 matching archive records for "Elizabeth Jenkins" in the 1970 New York Census.
+                        </p>
+<button class="mt-4 w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-container transition-colors">
+                            Compare Records
+                        </button>
+</section>
+</div>
+</div>
+<!-- Side Panel Footer -->
+<div class="p-8 pt-4 border-t border-outline-variant/10">
+<button class="w-full py-3 bg-surface-container-highest text-on-surface text-sm font-bold rounded-xl hover:bg-surface-container-high transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">edit</span>
+                    Edit Profile
+                </button>
+</div>
+</aside>
+</main>
+<!-- Footer (Shared Component Execution) -->
+<footer class="w-full py-6 px-8 mt-auto bg-slate-50 dark:bg-slate-950 z-30">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-semibold text-indigo-900 dark:text-indigo-100">AncestryMap</span>
+<span class="text-sm font-['Inter'] leading-relaxed text-slate-500 dark:text-slate-400">© 2024 AncestryMap. The Digital Curator.</span>
+</div>
+<div class="flex gap-6">
+<a class="text-sm font-['Inter'] leading-relaxed text-slate-500 dark:text-slate-400 hover:underline decoration-indigo-500/30 underline-offset-4" href="#">Privacy Policy</a>
+<a class="text-sm font-['Inter'] leading-relaxed text-slate-500 dark:text-slate-400 hover:underline decoration-indigo-500/30 underline-offset-4" href="#">Terms of Service</a>
+<a class="text-sm font-['Inter'] leading-relaxed text-slate-500 dark:text-slate-400 hover:underline decoration-indigo-500/30 underline-offset-4" href="#">Help Center</a>
+<a class="text-sm font-['Inter'] leading-relaxed text-slate-500 dark:text-slate-400 hover:underline decoration-indigo-500/30 underline-offset-4" href="#">API Documentation</a>
+</div>
+</div>
+</footer>
+</body></html>

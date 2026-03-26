@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AncestryMap | Digital Curation for Generations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-tertiary-fixed": "#002113",
+                "outline-variant": "#c7c4d7",
+                "inverse-primary": "#c0c1ff",
+                "surface-container-lowest": "#ffffff",
+                "secondary": "#6b38d4",
+                "secondary-container": "#8455ef",
+                "on-secondary-fixed-variant": "#5516be",
+                "primary-fixed": "#e1e0ff",
+                "secondary-fixed-dim": "#d0bcff",
+                "surface-container": "#eeeeed",
+                "surface-variant": "#e2e2e2",
+                "on-error-container": "#93000a",
+                "tertiary": "#006c49",
+                "surface": "#f9f9f8",
+                "on-error": "#ffffff",
+                "primary-container": "#6063ee",
+                "surface-container-highest": "#e2e2e2",
+                "secondary-fixed": "#e9ddff",
+                "tertiary-fixed": "#6ffbbe",
+                "on-secondary": "#ffffff",
+                "on-tertiary-fixed-variant": "#005236",
+                "surface-bright": "#f9f9f8",
+                "on-primary-fixed": "#07006c",
+                "on-primary": "#ffffff",
+                "on-tertiary-container": "#000703",
+                "on-background": "#1a1c1c",
+                "surface-tint": "#494bd6",
+                "inverse-surface": "#2f3130",
+                "surface-dim": "#dadad9",
+                "on-surface-variant": "#464554",
+                "error": "#ba1a1a",
+                "on-primary-container": "#fffbff",
+                "surface-container-high": "#e8e8e7",
+                "error-container": "#ffdad6",
+                "on-surface": "#1a1c1c",
+                "inverse-on-surface": "#f1f1f0",
+                "on-secondary-container": "#fffbff",
+                "tertiary-container": "#00885d",
+                "on-secondary-fixed": "#23005c",
+                "background": "#f9f9f8",
+                "primary": "#4648d4",
+                "outline": "#767586",
+                "surface-container-low": "#f3f4f3",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#4edea3",
+                "primary-fixed-dim": "#c0c1ff",
+                "on-primary-fixed-variant": "#2f2ebe"
+              },
+              fontFamily: {
+                "headline": ["Inter"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- NAVIGATION BAR -->
+<nav class="fixed top-0 w-full z-50 sticky bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(70,72,212,0.04)]">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
+<!-- Brand -->
+<div class="flex items-center gap-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+<span class="material-symbols-outlined text-indigo-600" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+<span>AncestryMap</span>
+</div>
+<!-- Links -->
+<div class="hidden md:flex items-center gap-8 font-['Inter'] text-sm font-medium tracking-tight">
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold transition-colors duration-200" href="#">Explore</a>
+<a class="text-zinc-600 dark:text-zinc-400 hover:text-indigo-500 transition-colors duration-200" href="#">Features</a>
+<a class="text-zinc-600 dark:text-zinc-400 hover:text-indigo-500 transition-colors duration-200" href="#">Pricing</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<a class="text-zinc-600 font-medium text-sm hover:text-indigo-600 transition-colors" href="#">Log in</a>
+<a class="bg-gradient-to-r from-primary to-secondary text-on-primary px-6 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-200" href="#">Get Started</a>
+</div>
+</div>
+</nav>
+<main class="relative overflow-hidden">
+<!-- Background Decorative Blobs -->
+<div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<!-- HERO SECTION -->
+<section class="max-w-7xl mx-auto px-6 pt-24 pb-32 md:pt-32 md:pb-48">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<!-- Left Content -->
+<div class="flex flex-col items-start space-y-8">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tertiary/10 text-tertiary text-xs font-bold tracking-wider uppercase">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                        Interactive Genealogy Platform
+                    </div>
+<h1 class="text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-on-surface">
+                        Map your <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">heritage</span> with elegance.
+                    </h1>
+<p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-xl">
+                        A beautifully engineered platform to trace your lineage, document complex relationships, and preserve your family story for generations to come.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/25 hover:translate-y-[-2px] active:translate-y-[1px] transition-all">
+                            Start Your Tree Free
+                        </button>
+<button class="px-8 py-4 rounded-xl font-bold text-lg border-2 border-outline-variant text-on-surface hover:bg-surface-container transition-all">
+                            Sign In to Account
+                        </button>
+</div>
+<p class="text-sm text-on-surface-variant/60 font-medium">
+                        No credit card required. Setup takes seconds.
+                    </p>
+</div>
+<!-- Right Visual -->
+<div class="relative group">
+<!-- Main Preview Card -->
+<div class="relative z-10 w-full aspect-[4/3] bg-zinc-950 rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/10 glass-card">
+<!-- Abstract Tree Visualization -->
+<div class="absolute inset-0 p-12 flex items-center justify-center">
+<svg class="w-full h-full opacity-40" fill="none" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<path d="M200 50L200 120M200 120L100 180M200 120L300 180M100 180L60 250M100 180L140 250M300 180L260 250M300 180L340 250" stroke="white" stroke-dasharray="8 8" stroke-width="2"></path>
+<!-- Nodes -->
+<circle cx="200" cy="50" fill="#4648d4" r="12"></circle>
+<rect fill="#6b38d4" height="24" transform="rotate(45 200 122)" width="24" x="188" y="110"></rect>
+<circle cx="100" cy="180" fill="white" fill-opacity="0.2" r="10"></circle>
+<circle cx="300" cy="180" fill="white" fill-opacity="0.2" r="10"></circle>
+<circle cx="60" cy="250" fill="white" fill-opacity="0.1" r="8"></circle>
+<circle cx="140" cy="250" fill="white" fill-opacity="0.1" r="8"></circle>
+<circle cx="260" cy="250" fill="white" fill-opacity="0.1" r="8"></circle>
+<circle cx="340" cy="250" fill="white" fill-opacity="0.1" r="8"></circle>
+</svg>
+</div>
+<!-- Floating Live Badge -->
+<div class="absolute top-8 right-8 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+                            Live Syncing
+                        </div>
+<!-- User Avatars Overlap -->
+<div class="absolute bottom-8 left-8 flex -space-x-3">
+<img alt="User 1" class="w-10 h-10 rounded-full border-2 border-zinc-950 object-cover" data-alt="portrait of a young woman with a natural confident expression and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu-mkUr5i050AELIeahboTJ_qyCCGpm1YbQl9xNmb928xqncR_LHVrK0xC59Q6Sv4kCQEZYvE7SY9zMVTuVqRcUUs7dDKvhI1A12AyLrVlM5cM5XX7WDlcL4bTibrkwsursVDqNLu5r8Vig8M8aGyOyuydMMuBIiq1kXKQhaRXdTqbvrIMZK1P_LdvKkh0PEzIC7QUIt5UAvZW5WcnWT5q1yHnJGhIrsZykUlFN9bT60gzH3ECMogPyO_wQBjMBaqeq9uUrObNqg"/>
+<img alt="User 2" class="w-10 h-10 rounded-full border-2 border-zinc-950 object-cover" data-alt="handsome man with a beard looking thoughtfully away in warm urban daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhVNfjACynAvH9D-S0Zl-HMhc5n2gf21gMQB3IhFf5R2XANGua6z6df6F8eXMz3Xo34XS6waEHHXTaaOJE_Y27f81D6OBMAm7z05C_TgiEMOUuPKmX9TqemM0KZLT2j46kIUH1bMMZXoJ_Hhb0rwXW0F_xkN7_p0EpksfPyBMSbZUpAn-S4fU2Kc9c7YyuWk-uyLFIWXN_08kLXS-9Uh0BwJgYXGWeWEXVH2lyjwhsX3MsGyxyFwHe4wbOtQjBR6vjnmhgECFE9g"/>
+<img alt="User 3" class="w-10 h-10 rounded-full border-2 border-zinc-950 object-cover" data-alt="professional portrait of a man smiling warmly against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZJYNi19Los4IMo2ZAlIHNbv-LEVGAoCeJQ6lpA8AXwJ6RFMmYQqBP1sqam-q3NWVsiOxQPgbWg96Pk_NSJ92MA2r31prgtdrHdvzSBB57C2YE9bsADB7I9GuS8ErqV0YV_kOT4eBlo2suOjwEVHVvb78sqnxG6RoZDnx7YqNw1jHkgPGzDk7g2hDbrWiLgEmANK5j7HKuxN8VUQh2hMXeiBLA1TrDr5TT2EQ-iZlPb9KKRT3WBKy0HVq7HURrLIxZzabjjMritQ"/>
+<div class="w-10 h-10 rounded-full border-2 border-zinc-950 bg-primary-container flex items-center justify-center text-[10px] font-bold text-white">+12</div>
+</div>
+<!-- Toast Notification -->
+<div class="absolute bottom-8 right-8 max-w-[240px] p-4 rounded-2xl bg-white/90 shadow-2xl border border-white/50 animate-bounce-subtle">
+<div class="flex gap-3 items-center">
+<div class="p-2 rounded-lg bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">New Connection</p>
+<p class="text-xs font-medium text-on-surface">Sarah &amp; Michael created a union</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute -top-6 -left-6 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
+<div class="absolute -bottom-10 -right-10 w-32 h-32 bg-secondary/20 rounded-full blur-3xl"></div>
+</div>
+</div>
+</section>
+<!-- SUB-FEATURE BENTO GRID -->
+<section class="max-w-7xl mx-auto px-6 pb-32">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="col-span-1 md:col-span-2 p-10 rounded-[2rem] bg-white border border-surface-container shadow-sm hover:shadow-xl transition-shadow duration-500 flex flex-col justify-between min-h-[400px]">
+<div>
+<span class="material-symbols-outlined text-4xl text-primary mb-6">hub</span>
+<h3 class="text-3xl font-bold mb-4">Recursive Mapping</h3>
+<p class="text-on-surface-variant text-lg max-w-md">Our engine handles thousands of nodes without lag, ensuring your legacy remains navigable no matter how far it reaches.</p>
+</div>
+<div class="mt-8 overflow-hidden rounded-xl bg-surface-container-low h-32 border border-outline-variant/10">
+<div class="flex items-center justify-center h-full gap-4 px-6">
+<div class="h-1 bg-primary/20 flex-1 rounded-full overflow-hidden">
+<div class="w-2/3 h-full bg-primary"></div>
+</div>
+<span class="text-xs font-bold text-primary">87% DATA INDEXED</span>
+</div>
+</div>
+</div>
+<div class="p-10 rounded-[2rem] bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
+<span class="material-symbols-outlined text-4xl text-secondary mb-6">shield</span>
+<h3 class="text-3xl font-bold mb-4">Secure Vault</h3>
+<p class="text-on-surface-variant text-lg">Every memory is encrypted. You decide who sees what part of your family history.</p>
+<div class="mt-12 flex justify-center">
+<span class="material-symbols-outlined text-8xl text-indigo-200/50">verified_user</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER -->
+<footer class="bg-[#f9f9f8] dark:bg-zinc-950 w-full py-12 px-6 border-t border-zinc-200/15">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">AncestryMap</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Inter'] text-xs tracking-wide uppercase font-semibold text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-xs tracking-wide uppercase font-semibold text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Terms of Service</a>
+<a class="font-['Inter'] text-xs tracking-wide uppercase font-semibold text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Cookie Settings</a>
+<a class="font-['Inter'] text-xs tracking-wide uppercase font-semibold text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Archive Guidelines</a>
+</div>
+<div class="text-[10px] text-zinc-400 font-medium">
+                © 2024 AncestryMap. Digital Curation for Generations.
+            </div>
+</div>
+</footer>
+</body></html>

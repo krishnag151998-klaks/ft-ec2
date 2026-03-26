@@ -62,16 +62,16 @@ export default function ExportMenu({ individuals }: ExportMenuProps) {
                 aria-haspopup="true"
                 aria-expanded={open}
             >
-                <span className="action-icon">⬇</span>
+                <span className="material-symbols-outlined action-icon" style={{ fontSize: '1.1rem' }}>download</span>
                 Export
             </button>
             {open && (
                 <div className="export-dropdown">
                     <button className="export-option" onClick={exportCSV}>
-                        <span>📄</span> Export as CSV
+                        <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>description</span> Export as CSV
                     </button>
                     <button className="export-option" onClick={exportJSON}>
-                        <span>📦</span> Export as JSON
+                        <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>data_object</span> Export as JSON
                     </button>
                 </div>
             )}

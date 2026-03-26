@@ -41,13 +41,13 @@ export default function PersonStatsPanel({ individual, allIndividuals, onClose }
     }, [individual, allIndividuals]);
 
     const genderColor = individual.gender === "male" ? "var(--accent-male)" : individual.gender === "female" ? "var(--accent-female)" : "var(--accent-other)";
-    const genderEmoji = individual.gender === "male" ? "👤" : individual.gender === "female" ? "👩" : "🧑";
+    const genderIcon = individual.gender === "male" ? "person" : individual.gender === "female" ? "person_4" : "person_3";
 
     return (
         <div className="stats-panel">
             <div className="stats-panel-header" style={{ borderTopColor: genderColor }}>
-                <div className="stats-avatar" style={{ color: genderColor, background: `${genderColor}12` }}>
-                    {genderEmoji}
+                <div className="stats-avatar" style={{ color: genderColor }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>{genderIcon}</span>
                 </div>
                 <div className="stats-name-block">
                     <h3 className="stats-full-name">
@@ -56,7 +56,9 @@ export default function PersonStatsPanel({ individual, allIndividuals, onClose }
                     </h3>
                     <span className="stats-gender">{individual.gender}</span>
                 </div>
-                <button className="stats-close" onClick={onClose} aria-label="Close panel">×</button>
+                <button className="stats-close" onClick={onClose} aria-label="Close panel">
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>close</span>
+                </button>
             </div>
 
             <div className="stats-body">

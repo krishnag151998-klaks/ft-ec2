@@ -215,22 +215,19 @@ export default function FamilyTree({ onDataLoaded }: FamilyTreeProps) {
                         title="Find relationship between two people"
                     >
                         <span className="action-icon">🔗</span>
-                        Find Relationship
+                        Find Rel
                     </button>
                     <ExportMenu individuals={rawIndividuals} />
+                    <AddPersonButton onPersonAdded={fetchTree} />
+                    <button
+                        className={`action-btn ${viewMode === "3d" ? "action-btn-primary" : "action-btn-secondary"}`}
+                        onClick={() => setViewMode(viewMode === "2d" ? "3d" : "2d")}
+                        title={viewMode === "2d" ? "Switch to 3D view" : "Switch to 2D view"}
+                    >
+                        <span className="action-icon">{viewMode === "2d" ? "🧊" : "📋"}</span>
+                        {viewMode === "2d" ? "3D View" : "2D View"}
+                    </button>
                 </div>
-            </div>
-
-            <div className="tree-actions">
-                <AddPersonButton onPersonAdded={fetchTree} />
-                <button
-                    className={`action-btn ${viewMode === "3d" ? "action-btn-primary" : "action-btn-secondary"}`}
-                    onClick={() => setViewMode(viewMode === "2d" ? "3d" : "2d")}
-                    title={viewMode === "2d" ? "Switch to 3D view" : "Switch to 2D view"}
-                >
-                    <span className="action-icon">{viewMode === "2d" ? "🧊" : "📋"}</span>
-                    {viewMode === "2d" ? "3D View" : "2D View"}
-                </button>
             </div>
 
             {viewMode === "3d" ? (

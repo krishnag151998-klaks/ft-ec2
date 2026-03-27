@@ -271,6 +271,7 @@ body {
     background: var(--surface-container-low);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    border: 2px solid var(--primary-container);
     height: calc(100vh - 320px);
     min-height: 500px;
     width: calc(100% - 2rem);

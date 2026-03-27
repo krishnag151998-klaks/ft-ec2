@@ -3,6 +3,7 @@ import TreeViewWrapper from "@/components/TreeViewWrapper";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import ClientSignInButton from "@/components/ClientSignInButton";
+import ClientSignOutButton from "@/components/ClientSignOutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export default async function HomePage() {
                     <span className="material-symbols-outlined" style={{ fontSize: '1.6rem', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', fontVariationSettings: "'FILL' 1" }}>account_tree</span>
                     <span className="lp-brand">AncestryMap</span>
                 </div>
-                {!session && (
+                {!session ? (
                     <div className="lp-nav-actions">
                         <ClientSignInButton className="lp-btn-login-text">
                             Log in
@@ -55,6 +56,12 @@ export default async function HomePage() {
                         <ClientSignInButton className="lp-btn-get-started-small">
                             Get Started
                         </ClientSignInButton>
+                    </div>
+                ) : (
+                    <div className="lp-nav-actions">
+                        <ClientSignOutButton className="lp-btn-login-text">
+                            Log out
+                        </ClientSignOutButton>
                     </div>
                 )}
             </nav>

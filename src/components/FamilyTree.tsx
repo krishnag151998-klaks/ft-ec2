@@ -17,6 +17,7 @@ import TreeCanvas from "./TreeCanvas";
 import AddPersonButton from "./AddPersonButton";
 import NodeContextMenu from "./NodeContextMenu";
 import EditMemberModal from "./EditMemberModal";
+import FamilyTree3D from "./FamilyTree3D";
 import SearchBar from "./SearchBar";
 import ExportMenu from "./ExportMenu";
 import PersonStatsPanel from "./PersonStatsPanel";
@@ -39,6 +40,7 @@ export default function FamilyTree({ onDataLoaded }: FamilyTreeProps) {
 
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
     const [editMember, setEditMember] = useState<Individual | null>(null);
+    const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
 
     // New feature states
     const [searchQuery, setSearchQuery] = useState("");
@@ -216,48 +218,64 @@ export default function FamilyTree({ onDataLoaded }: FamilyTreeProps) {
                         Find Relationship
                     </button>
                     <ExportMenu individuals={rawIndividuals} />
-                    <AddPersonButton onPersonAdded={fetchTree} />
                 </div>
             </div>
 
-            <TreeCanvas
-                nodes={filteredNodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onNodeClick={handleNodeClick}
-                onPaneClick={handlePaneClick}
-            />
+            <div className="tree-actions">
+                <AddPersonButton onPersonAdded={fetchTree} />
+                <button
+                    className={`action-btn ${viewMode === "3d" ? "action-btn-primary" : "action-btn-secondary"}`}
+                    onClick={() => setViewMode(viewMode === "2d" ? "3d" : "2d")}
+                    title={viewMode === "2d" ? "Switch to 3D view" : "Switch to 2D view"}
+                >
+                    <span className="action-icon">{viewMode === "2d" ? "🧊" : "📋"}</span>
+                    {viewMode === "2d" ? "3D View" : "2D View"}
+                </button>
+            </div>
 
-            {contextMenu && (
-                <NodeContextMenu
-                    x={contextMenu.x}
-                    y={contextMenu.y}
-                    memberId={contextMenu.nodeId}
-                    memberName={contextMenu.memberName}
-                    onClose={() => setContextMenu(null)}
-                    onAddRelative={() => {
-                        setContextMenu(null);
-                        fetchTree();
-                    }}
-                    onEdit={() => {
-                        const ind = rawIndividuals.find((i) => i.id === contextMenu.nodeId);
-                        if (ind) setEditMember(ind);
-                        setContextMenu(null);
-                    }}
-                />
+            {viewMode === "3d" ? (
+                <FamilyTree3D />
+            ) : (
+                <>
+                    <TreeCanvas
+                        nodes={filteredNodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onNodeClick={handleNodeClick}
+                        onPaneClick={handlePaneClick}
+                    />
+
+                    {contextMenu && (
+                        <NodeContextMenu
+                            x={contextMenu.x}
+                            y={contextMenu.y}
+                            memberId={contextMenu.nodeId}
+                            memberName={contextMenu.memberName}
+                            onClose={() => setContextMenu(null)}
+                            onAddRelative={() => {
+                                setContextMenu(null);
+                                fetchTree();
+                            }}
+                            onEdit={() => {
+                                const ind = rawIndividuals.find((i) => i.id === contextMenu.nodeId);
+                                if (ind) setEditMember(ind);
+                                setContextMenu(null);
+                            }}
+                        />
+                    )}
+
+                    <EditMemberModal
+                        isOpen={!!editMember}
+                        member={editMember}
+                        onClose={() => setEditMember(null)}
+                        onSuccess={() => {
+                            setEditMember(null);
+                            fetchTree();
+                        }}
+                    />
+                </>
             )}
-
-            <EditMemberModal
-                isOpen={!!editMember}
-                member={editMember}
-                onClose={() => setEditMember(null)}
-                onSuccess={() => {
-                    setEditMember(null);
-                    fetchTree();
-                }}
-            />
-
             {/* Stats panel — slides in from right when a person is selected */}
             {selectedIndividual && (
                 <PersonStatsPanel

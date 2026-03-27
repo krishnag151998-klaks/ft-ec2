@@ -29,9 +29,10 @@ import RelationshipFinder from "./RelationshipFinder";
 
 interface FamilyTreeProps {
     onDataLoaded?: (individuals: Individual[]) => void;
+    renderToggle?: () => React.ReactNode;
 }
 
-export default function FamilyTree({ onDataLoaded }: FamilyTreeProps) {
+export default function FamilyTree({ onDataLoaded, renderToggle }: FamilyTreeProps) {
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
     const [rawIndividuals, setRawIndividuals] = useState<Individual[]>([]);
@@ -208,6 +209,7 @@ export default function FamilyTree({ onDataLoaded }: FamilyTreeProps) {
             {/* Toolbar */}
             <div className="tree-toolbar">
                 <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                {renderToggle && renderToggle()}
                 <div className="tree-toolbar-actions">
                     <button
                         className="action-btn action-btn-secondary"

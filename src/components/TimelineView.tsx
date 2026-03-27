@@ -5,6 +5,7 @@ import type { Individual } from "@/types/familytree";
 
 interface TimelineViewProps {
     individuals: Individual[];
+    renderToggle?: () => React.ReactNode;
 }
 
 interface TimelineEvent {
@@ -14,7 +15,7 @@ interface TimelineEvent {
     personName: string;
 }
 
-export default function TimelineView({ individuals }: TimelineViewProps) {
+export default function TimelineView({ individuals, renderToggle }: TimelineViewProps) {
     const events = useMemo<TimelineEvent[]>(() => {
         const evts: TimelineEvent[] = [];
         for (const ind of individuals) {
@@ -73,7 +74,10 @@ export default function TimelineView({ individuals }: TimelineViewProps) {
     return (
         <div className="timeline-container">
             <div className="timeline-header">
-                <span className="timeline-title">📅 Family Timeline</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="timeline-title">📅 Family Timeline</span>
+                    {renderToggle && renderToggle()}
+                </div>
                 <div className="timeline-legend">
                     <span>🟢 Birth</span>
                     <span>🔴 Death</span>

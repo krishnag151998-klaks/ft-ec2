@@ -1777,12 +1777,8 @@ html.dark-theme .lp-nav {
 }
 
 .view-toggle-container {
-    position: absolute;
-    top: 1.2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
     display: flex;
+    align-items: center;
     gap: 0;
     background: var(--bg-secondary);
     border-radius: 100px;

@@ -18,10 +18,18 @@ export default function TreeViewWrapper() {
 
     return (
         <div className="tree-view-wrapper">
-            <ViewToggle mode={mode} onToggle={setMode} />
-            {mode === "2d" && <FamilyTree onDataLoaded={setTimelineIndividuals} />}
-
-            {mode === "timeline" && <TimelineView individuals={timelineIndividuals} />}
+            {mode === "2d" && (
+                <FamilyTree
+                    onDataLoaded={setTimelineIndividuals}
+                    renderToggle={() => <ViewToggle mode={mode} onToggle={setMode} />}
+                />
+            )}
+            {mode === "timeline" && (
+                <TimelineView
+                    individuals={timelineIndividuals}
+                    renderToggle={() => <ViewToggle mode={mode} onToggle={setMode} />}
+                />
+            )}
         </div>
     );
 }

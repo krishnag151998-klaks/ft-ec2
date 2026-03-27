@@ -14,8 +14,10 @@
     --tertiary-container: #92b197;
 
     /* Surfaces — Warm neutrals */
-    --bg-primary: #f9f9f8;
-    --bg-secondary: #ffffff;
+    --bg-primary: #fdfbef;
+    /* slightly yellowish warm white */
+    --bg-secondary: #f7f4e4;
+    /* slightly darker warm yellow */
     --bg-card: #ffffff;
     --bg-card-hover: #f3f4f3;
     --bg-glass: rgba(255, 255, 255, 0.7);
@@ -76,8 +78,9 @@
 
 html.dark-theme,
 html.dark-theme body {
-    --bg-primary: #111110;
-    --bg-secondary: #1c1b19;
+    --bg-primary: #1c1c1f;
+    /* noticeably more grey instead of black */
+    --bg-secondary: #242428;
     --bg-card: #242321;
     --bg-card-hover: #2c2b28;
     --bg-glass: rgba(26, 26, 34, 0.7);

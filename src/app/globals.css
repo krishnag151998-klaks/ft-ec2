@@ -322,8 +322,8 @@ html.dark-theme .tree-container {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     transition: all var(--transition-base);
     cursor: grab;
-    border: 1.5px solid var(--border-subtle);
-    border-top: 5px solid var(--outline-variant);
+    border: 2px solid var(--border-medium);
+    border-top-width: 5px;
 }
 
 .person-node:hover {
@@ -332,7 +332,7 @@ html.dark-theme .tree-container {
 }
 
 .person-node.male {
-    border-top-color: #6b7f99;
+    border-color: #6b7f99;
 }
 
 .person-node.male:hover {
@@ -340,7 +340,7 @@ html.dark-theme .tree-container {
 }
 
 .person-node.female {
-    border-top-color: #ac9989;
+    border-color: #ac9989;
 }
 
 .person-node.female:hover {
@@ -348,7 +348,7 @@ html.dark-theme .tree-container {
 }
 
 .person-node.other {
-    border-top-color: #6d8a72;
+    border-color: #7f9e85;
 }
 
 .person-node.other:hover {
@@ -2001,6 +2001,10 @@ html.dark-theme .card3d-name {
     flex-wrap: wrap;
     z-index: 5;
     position: relative;
+    border: 2px solid var(--primary-container);
+    border-radius: var(--radius-lg);
+    margin: 1rem 1rem 0.5rem 1rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .tree-toolbar-actions {
@@ -2158,6 +2162,7 @@ html.dark-theme .card3d-name {
     background: var(--bg-glass);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
+    border-left: 2px solid var(--primary-container);
     box-shadow: -20px 0 50px rgba(0, 0, 0, 0.04);
     z-index: 90;
     display: flex;

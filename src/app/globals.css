@@ -576,13 +576,14 @@ html.dark-theme .tree-container {
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-fast);
-    border: none;
+    border: 2px solid transparent;
     letter-spacing: 0.01em;
 }
 
 .action-btn-primary {
     background: var(--gradient-primary);
     color: white;
+    border: 2px solid var(--primary);
     box-shadow: 0 4px 12px rgba(107, 127, 153, 0.25);
 }
 
@@ -594,6 +595,7 @@ html.dark-theme .tree-container {
 .action-btn-secondary {
     background: var(--surface-container-highest);
     color: var(--primary);
+    border: 2px solid var(--border-medium);
 }
 
 .action-btn-secondary:hover {

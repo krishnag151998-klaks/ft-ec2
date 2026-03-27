@@ -211,6 +211,7 @@ export default function FamilyTree({ onDataLoaded, renderToggle }: FamilyTreePro
                 <SearchBar value={searchQuery} onChange={setSearchQuery} />
                 {renderToggle && renderToggle()}
                 <div className="tree-toolbar-actions">
+                    <AddPersonButton onPersonAdded={fetchTree} />
                     <button
                         className="action-btn action-btn-secondary"
                         onClick={() => setShowRelFinder(true)}
@@ -220,7 +221,6 @@ export default function FamilyTree({ onDataLoaded, renderToggle }: FamilyTreePro
                         Find Rel
                     </button>
                     <ExportMenu individuals={rawIndividuals} />
-                    <AddPersonButton onPersonAdded={fetchTree} />
                     <button
                         className={`action-btn ${viewMode === "3d" ? "action-btn-primary" : "action-btn-secondary"}`}
                         onClick={() => setViewMode(viewMode === "2d" ? "3d" : "2d")}

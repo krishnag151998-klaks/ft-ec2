@@ -10,8 +10,8 @@
     --primary-container: #7d90a8;
     --secondary: #9b8878;
     --secondary-container: #ac9989;
-    --tertiary: #6d8a72;
-    --tertiary-container: #7fa085;
+    --tertiary: #7f9e85;
+    --tertiary-container: #92b197;
 
     /* Surfaces — Warm neutrals */
     --bg-primary: #f9f9f8;
@@ -33,9 +33,9 @@
     --accent-primary: #6b7f99;
     --accent-male: #6b7f99;
     --accent-female: #ac9989;
-    --accent-other: #6d8a72;
+    --accent-other: #7f9e85;
     --accent-danger: #ba1a1a;
-    --accent-success: #6d8a72;
+    --accent-success: #7f9e85;
 
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, #6b7f99 0%, #9b8878 50%, #ac9989 100%);

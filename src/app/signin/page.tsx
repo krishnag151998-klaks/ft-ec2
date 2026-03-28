@@ -155,7 +155,7 @@ function SignInContent() {
                                                 shield_person
                                             </span>
                                         )}
-                                        {loadingProvider === "cognito" ? "Redirecting…" : "Continue with AWS Cognito"}
+                                        {loadingProvider === "cognito" ? "Redirecting…" : "Continue with Email"}
                                     </button>
                                 )}
 

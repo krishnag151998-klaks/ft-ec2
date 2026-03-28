@@ -2,9 +2,12 @@ import { Suspense } from "react";
 import SignInClient from "./SignInClient";
 
 export default async function SignInPage() {
-    // Read from the actual server environment at runtime
-    const cognitoDomain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN || "";
-    const cognitoClientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || "";
+    // Prevent Next.js from statically replacing variables by accessing them dynamically
+    const domainKey = "NEXT_PUBLIC_COGNITO_DOMAIN" as keyof NodeJS.ProcessEnv;
+    const clientKey = "COGNITO_CLIENT_ID" as keyof NodeJS.ProcessEnv;
+
+    const cognitoDomain = process.env[domainKey] || "";
+    const cognitoClientId = process.env[clientKey] || "";
 
     return (
         <Suspense fallback={

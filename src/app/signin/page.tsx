@@ -2,12 +2,10 @@ import { Suspense } from "react";
 import SignInClient from "./SignInClient";
 
 export default async function SignInPage() {
-    // Prevent Next.js from statically replacing variables by accessing them dynamically
-    const domainKey = "NEXT_PUBLIC_COGNITO_DOMAIN" as keyof NodeJS.ProcessEnv;
-    const clientKey = "COGNITO_CLIENT_ID" as keyof NodeJS.ProcessEnv;
-
-    const cognitoDomain = process.env[domainKey] || "";
-    const cognitoClientId = process.env[clientKey] || "";
+    // Read from the standard local EC2 environment (without NEXT_PUBLIC_ prefixes)
+    // This absolutely guarantees Webpack cannot replace the strings at build-time.
+    const cognitoDomain = process.env.COGNITO_DOMAIN || "";
+    const cognitoClientId = process.env.COGNITO_CLIENT_ID || "";
 
     return (
         <Suspense fallback={
